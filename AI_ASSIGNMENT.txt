@@ -1,0 +1,51 @@
+ ### IMPLEMENTATION OF 8-PUZZLE PROBLEM USING RBFS SEARCH TECHNIQUE ###
+
+
+"def RBFS_search(node,f_limit):\n",
+        "    successors=[]\n",
+        "\n",
+        "    if node.goal_test():\n",
+        "        return node,None\n",
+        "    children=node.generate_child()\n",
+        "    if not len(children):\n",
+        "        return None, maxsize\n",
+        "    count=-1\n",
+        "    for child in children:\n",
+        "        count+=1\n",
+        "        successors.append((child.evaluation_function,count,child))\n",
+        "    while len(successors):\n",
+        "        successors.sort()\n",
+        "        best_node=successors[0][2]\n",
+        "        if best_node.evaluation_function > f_limit:\n",
+        "            return None, best_node.evaluation_function\n",
+        "        alternative=successors[1][0]\n",
+        "        result,best_node.evaluation_function=RBFS_search(best_node,min(f_limit,alternative))\n",
+        "        successors[0]=(best_node.evaluation_function,successors[0][1],best_node)\n",
+        "        if result!=None:\n",
+        "            break\n",
+        "    return result,None\n",
+        "\n",
+        "state=[1, 4, 3,\n",
+        "        8, 6, 2,\n",
+        "        7, 0, 5]\n",
+        "strt_time = time()\n",
+        "RBFS = recursive_best_first_search(state)\n",
+        "run_time = time() - strt_time\n",
+        "print('RBFS:',RBFS)\n",
+        "print('time:', run_time)\n",
+        "print()\n",
+        "\n"
+      ],
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "RBFS: ['U', 'U', 'L', 'D', 'R', 'R', 'D', 'L', 'L', 'U', 'U', 'R', 'D', 'L', 'D', 'R', 'U', 'R', 'D']\n",
+            "time: 108.03458428382874\n",
+            "\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
