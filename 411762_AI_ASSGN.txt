@@ -1,0 +1,114 @@
+
+        # Implementation of 8-Puzzle Problem using A* 
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "pMHkUcs-i0rm",
+        "colab_type": "code",
+        "outputId": "fb0c34a5-2c42-46db-b69c-ed76aa1fbda3",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 34
+        }
+      },
+      "source": [
+        "\n",
+        "from copy import deepcopy\n",
+        "DIRECTIONS = {\"U\": [-1, 0], \"D\": [ 1, 0], \"L\": [ 0,-1], \"R\" : [ 0, 1]}\n",
+        "END = [[1,2,3],[4,5,6],[7,8,0]]\n",
+        "class Node:\n",
+        "    def __init__(self, state, previous, g, h, direction):\n",
+        "        self.state = state\n",
+        "        self.previous = previous\n",
+        "        self.g = g \n",
+        "        self.h = h \n",
+        "        self.dir = direction \n",
+        "    def f(self):\n",
+        "        return self.g + self.h\n",
+        "def dist(a,b):\n",
+        "    cost = 0\n",
+        "    for row in range(len(a)):\n",
+        "        for col in range(len(a[0])):\n",
+        "            pos = get_pos(b,a[row][col])\n",
+        "            cost += abs(row - pos[0]) + abs(col - pos[1])\n",
+        "    return cost\n",
+        "\n",
+        "def getBestNode(openSet):\n",
+        "    firstIter = True\n",
+        "    for node in openSet.values():\n",
+        "        if firstIter or node.f() < bestF:\n",
+        "            firstIter = False\n",
+        "            bestNode = node\n",
+        "            bestF = bestNode.f()\n",
+        "    return bestNode\n",
+        "\n",
+        "def get_pos(state,elem):\n",
+        "    for row in range(len(state)):\n",
+        "        if elem in state[row]:\n",
+        "            return (row,state[row].index(elem))\n",
+        "\n",
+        "def getAdjNode(node):\n",
+        "    listNode = []\n",
+        "    emptyPos= getPos(node.state,0)\n",
+        "    for dir in DIRECTIONS.keys():\n",
+        "        newPos = (emptyPos[0] + DIRECTIONS[dir][0], emptyPos[1] + DIRECTIONS[dir][1])\n",
+        "        if 0 <= newPos[0] < len(node.state) and 0 <= newPos[1] < len(node.state[0]) :\n",
+        "            newState = deepcopy(node.state)\n",
+        "            newState[emptyPos[0]][emptyPos[1]] = node.state[newPos[0]][newPos[1]]\n",
+        "            newState[newPos[0]][newPos[1]] = 0\n",
+        "            listNode += [Node(newState, node.state, node.g + 1, euclidianCost(newState, END), dir)]\n",
+        "    return listNode\n",
+        "\n",
+        "def buildPath(closedSet):\n",
+        "    node = closedSet[str(END)]\n",
+        "    path = \"\"\n",
+        "    while node.dir:\n",
+        "        path = node.dir + \"->\"+path\n",
+        "        node = closedSet[str(node.previous)]\n",
+        "    return path[:-2]\n",
+        "\n",
+        "def check_final(puzzle):\n",
+        "    openSet = {str(puzzle) : Node(puzzle,puzzle,0,dist(puzzle,END), \"\")}\n",
+        "    closedSet = {}\n",
+        "    while len(openSet) > 0:\n",
+        "        examNode = getBestNode(openSet)\n",
+        "        closedSet[str(examNode.state)] = examNode\n",
+        "        if examNode.state == END:\n",
+        "\n",
+        "            return buildPath(closedSet)\n",
+        "        adj = getAdjNode(examNode)\n",
+        "        for node in adj:\n",
+        "            if str(node.state) in closedSet.keys() or str(node.state) in openSet.keys() and openSet[str(node.state)].f() < node.f():\n",
+        "                continue\n",
+        "            openSet[str(node.state)] = node\n",
+        "        del openSet[str(examNode.state)]\n",
+        "    return \"\"\n",
+        "\n",
+        "\n",
+        "print(\"PATH IS: \",check_final([[1, 2, 3],\n",
+        "                   [7, 4, 5],\n",
+        "                   [8, 0, 6]]))"
+      ],
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "L->U->R->R->D\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "DoNtuyhLZ4tG",
+        "colab_type": "text"
+      },
+      "source": [
+
+
+  
